@@ -21,12 +21,14 @@ class Webhooks::Trigger
   private
 
   def perform_request
+    timeout = (ENV.fetch('WEBHOOK_HTTP_TIMEOUT', '25')).to_i
+
     RestClient::Request.execute(
       method: :post,
       url: @url,
       payload: @payload.to_json,
       headers: { content_type: :json, accept: :json },
-      timeout: 5
+      timeout: timeout # Increased timeout to whatever is set in the environment variable
     )
   end
 
